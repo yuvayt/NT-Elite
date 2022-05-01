@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            Clock.TestClock.Run();
+            Clock.ClockTest.RunTest();
             Asynchronous.SimplePrimeNumber.PrintPrimeNumbers();
         }
     }
