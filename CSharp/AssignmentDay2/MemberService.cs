@@ -25,8 +25,7 @@ namespace AssignmentDay2
         public static Member GetOldestMember(List<Member> members)
         {
             int maxAge = members.Max(x => x.Age);
-            Member member = members.FirstOrDefault(x => x.Age == maxAge);
-            Member oldestMember = members.Aggregate((memberA, memberB) => memberA.Age < memberB.Age ? memberB : memberA);
+            Member oldestMember = members.FirstOrDefault(x => x.Age == maxAge);
 
             return oldestMember;
         }

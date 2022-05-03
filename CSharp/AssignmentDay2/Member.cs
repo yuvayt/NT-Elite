@@ -50,15 +50,18 @@ namespace AssignmentDay2
             }
         }
 
-        public Member(string firstName, string ln, string g, DateTime dob, string pn, string bp, bool ig)
+        public Member(
+            string firstName, string lastName, string gender,
+            DateTime dob, string phoneNumber, string birthPlace,
+            bool isGraduated)
         {
             this.FirstName = firstName;
-            this.LastName = ln;
-            this.Gender = g;
+            this.LastName = lastName;
+            this.Gender = gender;
             this.Dob = dob;
-            this.PhoneNumber = pn;
-            this.BirthPlace = bp;
-            this.IsGraduated = ig;
+            this.PhoneNumber = phoneNumber;
+            this.BirthPlace = birthPlace;
+            this.IsGraduated = isGraduated;
         }
     }
 }
