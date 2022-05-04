@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MVCAssignment2.Models;
 using MVCAssignment2.Services;
 
@@ -9,87 +8,94 @@ namespace MVCAssignment2.Controllers
 {
     public class EliteController : Controller
     {
-        private readonly ILogger<EliteController> _logger;
+        public MemberService _memberService;
+        public ExportService _exportService;
 
-        private static List<Member> members = MemberService.InitMembers();
-
-        public EliteController(ILogger<EliteController> logger)
+        public EliteController()
         {
-            _logger = logger;
+            if (_memberService == null)
+            {
+                _memberService = new MemberService();
+            }
+
+            _exportService = new ExportService();
         }
 
-        public IActionResult Index()
+        public IActionResult ShowFullMembers()
+        {
+            return View(_memberService.Members);
+        }
+
+        public IActionResult Create()
         {
             return View();
         }
 
-        public string ShowMaleMembers()
+        [HttpPost]
+        public IActionResult Create(Member newMember)
         {
-            IEnumerable<Member> maleMembers = MemberService.GetMaleMembers(members);
+            newMember.Id = _memberService.GetNextId();
 
-            return string.Join("\n\r", maleMembers.Select(member => member.FullInfo));
+            return RedirectToAction("ShowFullmembers");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var member = _memberService.GetMemberById(id);
+
+            return View(member);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Member updateMember)
+        {
+            _memberService.UpdateMember(updateMember);
+
+            return RedirectToAction("ShowFullmembers");
+        }
+
+        public IActionResult ShowMaleMembers()
+        {
+            IEnumerable<Member> maleMembers = _memberService.GetMaleMembers();
+
+            return View(maleMembers);
         }
 
         public IActionResult ShowOldestMember()
         {
-            return Ok(MemberService.GetOldestMember(members).FullInfo);
+            var oldestMember = _memberService.GetOldestMember();
+
+            return Content(oldestMember.FullInfo);
         }
 
         public IActionResult ShowMembersFullName()
         {
-            IEnumerable<string> fullNames = MemberService.GetMembersFullName(members);
+            IEnumerable<string> fullNames = _memberService.GetMembersFullName();
 
             return Ok(fullNames);
         }
 
-        public IActionResult ShowViaQueryString(string id)
+        public IActionResult ShowViaValue(int id)
         {
+            IEnumerable<Member> result = _memberService.GetViaValue(id);
 
-            if (id == "0")
-            {
-                return RedirectToAction("ShowLess2K");
-            }
-
-            if (id == "2")
-            {
-                return RedirectToAction("ShowGreater2K");
-            }
-
-            return RedirectToAction("Show2K");
+            return Ok(result);
         }
 
-        public string ShowGreater2K()
+        public IActionResult DownloadMembersExcel()
         {
-            IEnumerable<Member> greater2ks = MemberService.GetGreater2K(members);
+            var fileName = "member.xlsx";
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var package = _exportService.ExportToExcel(_memberService.Members, "Members");
 
-            return string.Join("\n\r", greater2ks.Select(member => member.FullInfo));
-        }
+            var fileStream = new MemoryStream();
+            package.SaveAs(fileStream);
+            fileStream.Position = 0;
 
-        public string ShowLess2K()
-        {
-            IEnumerable<Member> less2ks = MemberService.GetLess2K(members);
+            var fsr = new FileStreamResult(fileStream, contentType);
+            fsr.FileDownloadName = fileName;
 
-            return string.Join("\n\r", less2ks.Select(member => member.FullInfo));
-        }
-
-        public string Show2K()
-        {
-            IEnumerable<Member> is2ks = MemberService.Get2K(members);
-
-            return string.Join("\n\r", is2ks.Select(member => member.FullInfo));
-        }
-
-        public string ShowFullMembers()
-        {
-            ExportService.ExportToExcel(@"member.xlsx", members, "Member");
-
-            return string.Join("\n\r", members.Select(member => member.FullInfo));
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
+            return fsr;
         }
     }
 }

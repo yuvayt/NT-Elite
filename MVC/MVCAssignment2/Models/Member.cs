@@ -4,6 +4,7 @@ namespace MVCAssignment2.Models
 {
     public class Member
     {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gender { get; set; }
@@ -51,11 +52,17 @@ namespace MVCAssignment2.Models
             }
         }
 
+        public Member()
+        {
+
+        }
+
         public Member(
-            string firstName, string lastName, string gender,
+            int id, string firstName, string lastName, string gender,
             DateTime dob, string phoneNumber, string birthPlace,
             bool isGraduated)
         {
+            this.Id = id;
             this.FirstName = firstName;
             this.LastName = lastName;
             this.Gender = gender;

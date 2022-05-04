@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MVCAssignment3.Services;
+using MVCAssignment3.Services.Interfaces;
 
-namespace MVCAssignment2
+namespace MVCAssignment3
 {
     public class Startup
     {
@@ -24,6 +26,7 @@ namespace MVCAssignment2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient<IPersonService, PersonService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,11 +53,7 @@ namespace MVCAssignment2
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Elite}/{action=ShowFullMembers}/{id?}");
-
-                endpoints.MapControllerRoute(
-                    name: "nashtech",
-                    pattern: "Nashtech/{controller}/{action}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

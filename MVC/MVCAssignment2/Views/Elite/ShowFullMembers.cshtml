@@ -1,0 +1,48 @@
+@model IEnumerable<Member>
+<h2 style="text-align: center;">Full Members</h2>
+
+<a type="button" class="btn btn-success" asp-controller="Elite" asp-action="Create">
+    New
+</a>
+
+<div style="margin-top: 20px;">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Date of Birth</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Birth Place</th>
+                <th scope="col">Graduated</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in Model)
+            {
+                <tr>
+                    <td>@member.FirstName</td>
+                    <td>@member.LastName</td>
+                    <td>@member.Gender</td>
+                    <td>@member.Dob</td>
+                    <td>@member.PhoneNumber</td>
+                    <td>@member.BirthPlace</td>
+                    <td>@member.IsGraduated</td>
+                    <td>
+                        <a class="btn btn-info" asp-controller="Elite" asp-action="Edit" asp-route-id="@member.Id">
+                            Edit
+                        </a>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
