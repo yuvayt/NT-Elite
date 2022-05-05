@@ -9,7 +9,7 @@ namespace MVCAssignment3.Services
 {
     public class PersonService : IPersonService
     {
-        private List<Person> _people;
+        private static List<Person> _people;
 
         public List<Person> People
         {
@@ -24,10 +24,17 @@ namespace MVCAssignment3.Services
                     return InitDummyMembers();
                 }
             }
+            private set
+            {
+                _people = value;
+            }
         }
         public PersonService()
         {
-            _people = InitDummyMembers();
+            if (_people == null)
+            {
+                _people = InitDummyMembers();
+            }
         }
         private List<Person> InitDummyMembers()
         {
@@ -35,15 +42,21 @@ namespace MVCAssignment3.Services
              new Person(1, "Bo", "Tran", "Bio", new DateTime(2021, 6, 9), "01234435", "HCM", false),
              new Person(2, "Da", "Nguyen", "Male", new DateTime(1969, 6, 9), "01234435", "HN", true),
              new Person(3, "Banh", "Kha", "Male", new DateTime(2000, 6, 9), "01234435", "HCM", false),
-             new Person(4, "Huan", "Rose", "Male", new DateTime(1999, 6, 8), "01234435", "HCM", true),
-             new Person(5, "Tien", "Bip", "Male", new DateTime(2001, 6, 9), "01234435", "HN", true)
+             new Person(4, "Huan", "Rose", "Female", new DateTime(1999, 6, 8), "01234435", "HCM", true),
+             new Person(5, "Tien", "Bip", "Male", new DateTime(2001, 6, 9), "01234435", "HN", true),
+             new Person(6, "Loc", "Fuho", "Male", new DateTime(2001, 6, 9), "01234435", "DN", true)
             };
         }
 
         public Person Create(NewPersonDTO personDTO)
         {
-            //Todo: handle to get next id
-            var nextId = 1;
+            int? maxId = People.Max(p => p.Id);
+            if (maxId == null)
+            {
+                maxId = 0;
+            }
+            var nextId = (int)maxId + 1;
+
             var addingPerson = new Person(
             nextId
             , personDTO.FirstName
@@ -59,17 +72,30 @@ namespace MVCAssignment3.Services
             return addingPerson;
         }
 
-        public bool Delete()
+        public bool Delete(Person deletePerson)
         {
+
+            if (deletePerson != null)
+            {
+                People.Remove(deletePerson);
+                return true;
+            }
+
             return false;
         }
 
-        public Person Edit(EditPersonDTO editPersonDTO)
+        public Person Update(EditPersonDTO editPersonDTO)
         {
-            var existingPerson = People.FirstOrDefault(p => p.Id == editPersonDTO.Id);
+            var existingPerson = GetPersonById(editPersonDTO.Id);
             if (existingPerson != null)
             {
                 existingPerson.FirstName = editPersonDTO.FirstName;
+                existingPerson.LastName = editPersonDTO.LastName;
+                existingPerson.Gender = editPersonDTO.Gender;
+                existingPerson.Dob = editPersonDTO.Dob;
+                existingPerson.PhoneNumber = editPersonDTO.PhoneNumber;
+                existingPerson.BirthPlace = editPersonDTO.BirthPlace;
+                existingPerson.IsGraduated = editPersonDTO.IsGraduated;
 
                 return existingPerson;
             }
@@ -79,12 +105,12 @@ namespace MVCAssignment3.Services
 
         public Person GetPersonById(int id)
         {
-            return null;
+            return People.FirstOrDefault(p => p.Id == id);
         }
 
-        public List<Person> ListAll()
+        public IEnumerable<Person> ListPeople()
         {
-            return null;
+            return People.OrderBy(person => person.Id);
         }
     }
 }

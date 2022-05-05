@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVCAssignment3.Models.DTO;
@@ -7,30 +8,92 @@ namespace MVCAssignment3.Controllers
 {
     public class PersonController : Controller
     {
-        private readonly ILogger<PersonController> _logger;
         private readonly IPersonService _personService;
 
         public PersonController(ILogger<PersonController> logger, IPersonService personService)
         {
-            _logger = logger;
             _personService = personService;
         }
 
-        public IActionResult Index()
+        public IActionResult ListPeople()
+        {
+            var people = _personService.ListPeople();
+
+            if (people == null)
+            {
+                return null;
+            }
+
+            return View(people);
+        }
+
+        public IActionResult Create()
         {
             return View();
         }
 
-        public IActionResult Add(NewPersonDTO newPersonDTO)
+        [HttpPost]
+        public IActionResult Create(NewPersonDTO newPersonDTO)
         {
             var newPerson = _personService.Create(newPersonDTO);
-            return View(newPerson);
+
+            return RedirectToAction("ListPeople");
         }
 
-        public IActionResult Edit(EditPersonDTO editPersonDTO)
+        public IActionResult Update(int? id)
         {
-            var updatePerson = _personService.Edit(editPersonDTO);
-            return View(updatePerson);
+            if (id != null)
+            {
+                var existingPerson = _personService.GetPersonById((int)id);
+
+                if (existingPerson != null)
+                {
+                    return View(existingPerson);
+                }
+            }
+
+            return null;
+        }
+
+        [HttpPost]
+        public IActionResult Update(EditPersonDTO editPersonDTO)
+        {
+            var updatePerson = _personService.Update(editPersonDTO);
+
+            return RedirectToAction("ListPeople");
+        }
+
+        public IActionResult Detail(int? id)
+        {
+            if (id != null)
+            {
+                var existingPerson = _personService.GetPersonById((int)id);
+
+                if (existingPerson != null)
+                {
+                    return View(existingPerson);
+                }
+            }
+
+            return null;
+        }
+
+        public IActionResult Delete(int? id)
+        {
+
+            if (id != null)
+            {
+                var deletePerson = _personService.GetPersonById((int)id);
+                string deleteKey = deletePerson.Id.ToString();
+                HttpContext.Session.SetString(deleteKey, deletePerson.FullName);
+
+                if (_personService.Delete(deletePerson))
+                {
+                    return View((object)deleteKey);
+                }
+            }
+
+            return null;
         }
     }
 }

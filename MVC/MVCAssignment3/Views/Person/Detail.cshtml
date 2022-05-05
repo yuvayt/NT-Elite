@@ -1,0 +1,61 @@
+@model MVCAssignment3.Models.Entities.Person
+
+<h2 style="text-align: center;">Person Details</h2>
+<div class="row justify-content-center">
+    <div class="col-4">
+        <form>
+            <input type="hidden" asp-for="Id">
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label "></label>
+                <input asp-for="FirstName" type="text" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label "></label>
+                <input asp-for="LastName" type="text" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Gender" class="form-label "></label>
+                <input asp-for="Gender" type="text" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Dob" class="form-label "></label>
+                <input asp-for="Dob" type="date" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label "></label>
+                <input asp-for="PhoneNumber" type="text" class="form-control" disabled>
+            </div>
+            <div class="mb-3">
+                <label asp-for="BirthPlace" class="form-label "></label>
+                <input asp-for="BirthPlace" type="text" class="form-control" disabled>
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="IsGraduated" type="checkbox" class="form-check-input" disabled>
+                <label asp-for="IsGraduated" class="form-check-label"></label>
+            </div>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+            <a type="button" class="ml-3 btn btn-secondary" asp-action="ListPeople">Back</a>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModal"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Are you sure?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you really want to Delete @Model.FullName
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a type="button" class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>

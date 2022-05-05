@@ -7,9 +7,9 @@ namespace MVCAssignment3.Services.Interfaces
     public interface IPersonService
     {
         Person Create(NewPersonDTO personDTO);
-        Person Edit(EditPersonDTO editPersonDTO);
-        List<Person> ListAll();
+        Person Update(EditPersonDTO editPersonDTO);
+        IEnumerable<Person> ListPeople();
         Person GetPersonById(int id);
-        bool Delete();
+        bool Delete(Person deletePerson);
     }
 }

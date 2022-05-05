@@ -1,0 +1,12 @@
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model string
+
+@{
+    string deleteName = HttpContextAccessor.HttpContext.Session.GetString(Model);
+}
+
+<h2 class="m-5 text-center">
+    @deleteName was removed from the list successfully!
+</h2>
+<a type="button" class="m-5 btn btn-secondary float-right" asp-action="ListPeople">Back</a>

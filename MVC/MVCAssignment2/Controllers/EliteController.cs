@@ -21,9 +21,9 @@ namespace MVCAssignment2.Controllers
             _exportService = new ExportService();
         }
 
-        public IActionResult ShowFullMembers()
+        public IActionResult ListMembers()
         {
-            return View(_memberService.Members);
+            return View(_memberService.GetMembersByOrder());
         }
 
         public IActionResult Create()
@@ -34,14 +34,29 @@ namespace MVCAssignment2.Controllers
         [HttpPost]
         public IActionResult Create(Member newMember)
         {
-            newMember.Id = _memberService.GetNextId();
+            if (newMember == null)
+            {
+                return null;
+            }
 
-            return RedirectToAction("ShowFullmembers");
+            _memberService.AddNewMember(newMember);
+
+            return RedirectToAction("ListMembers");
         }
 
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int? id)
         {
-            var member = _memberService.GetMemberById(id);
+            if (id == null)
+            {
+                return null;
+            }
+
+            var member = _memberService.GetMemberById((int)id);
+
+            if (member == null)
+            {
+                return null;
+            }
 
             return View(member);
         }
@@ -49,12 +64,25 @@ namespace MVCAssignment2.Controllers
         [HttpPost]
         public IActionResult Edit(Member updateMember)
         {
-            _memberService.UpdateMember(updateMember);
+            if (!_memberService.UpdateMember(updateMember))
+            {
+                return null;
+            }
 
-            return RedirectToAction("ShowFullmembers");
+            return RedirectToAction("ListMembers");
         }
 
-        public IActionResult ShowMaleMembers()
+        public IActionResult Delete(int? id)
+        {
+            if (!_memberService.RemoveMember(id))
+            {
+                return null;
+            }
+
+            return RedirectToAction("ListMembers");
+        }
+
+        public IActionResult ListMaleMembers()
         {
             IEnumerable<Member> maleMembers = _memberService.GetMaleMembers();
 
@@ -65,17 +93,17 @@ namespace MVCAssignment2.Controllers
         {
             var oldestMember = _memberService.GetOldestMember();
 
-            return Content(oldestMember.FullInfo);
+            return View(oldestMember);
         }
 
-        public IActionResult ShowMembersFullName()
+        public IActionResult ListMembersFullName()
         {
             IEnumerable<string> fullNames = _memberService.GetMembersFullName();
 
-            return Ok(fullNames);
+            return View(fullNames);
         }
 
-        public IActionResult ShowViaValue(int id)
+        public IActionResult ListViaValue(int id)
         {
             IEnumerable<Member> result = _memberService.GetViaValue(id);
 

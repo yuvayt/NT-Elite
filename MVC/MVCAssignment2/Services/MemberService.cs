@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Http;
 using MVCAssignment2.Models;
 
 namespace MVCAssignment2.Services
 {
     public class MemberService
     {
-
         private static List<Member> _members;
-
         public List<Member> Members
         {
             get
@@ -23,6 +20,10 @@ namespace MVCAssignment2.Services
                 {
                     return InitDummyMembers();
                 }
+            }
+            private set
+            {
+                _members = value;
             }
         }
         public MemberService()
@@ -41,6 +42,11 @@ namespace MVCAssignment2.Services
              new Member(4, "Huan", "Rose", "Male", new DateTime(1999, 6, 8), "01234435", "HCM", true),
              new Member(5, "Tien", "Bip", "Male", new DateTime(2001, 6, 9), "01234435", "HN", true)
             };
+        }
+
+        public List<Member> GetMembersByOrder()
+        {
+            return Members.OrderBy(member => member.Id).ToList();
         }
 
         public Member GetMemberById(int id)
@@ -63,14 +69,41 @@ namespace MVCAssignment2.Services
 
         public void AddNewMember(Member newMember)
         {
-
+            newMember.Id = GetNextId();
+            Members.Add(newMember);
         }
 
-        public void UpdateMember(Member updateMember)
+        public bool UpdateMember(Member updateMember)
         {
             Member member = GetMemberById(updateMember.Id);
-            _members.Remove(member);
-            _members.Add(updateMember);
+
+            if (member == null)
+            {
+                return false;
+            }
+
+            Members.Remove(member);
+            Members.Add(updateMember);
+
+            return true;
+        }
+
+        public bool RemoveMember(int? id)
+        {
+            if (id == null)
+            {
+                return false;
+            }
+
+            Member member = GetMemberById((int)id);
+            if (member == null)
+            {
+                return false;
+            }
+
+            Members.Remove(member);
+
+            return true;
         }
 
         public IEnumerable<Member> GetMaleMembers()

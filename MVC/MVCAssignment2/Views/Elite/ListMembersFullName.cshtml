@@ -1,0 +1,19 @@
+@model IEnumerable<string>
+<h2>Members Full Name</h2>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Full Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var fullName in Model)
+            {
+                <tr>
+                    <td>@fullName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,16 +1,26 @@
 using System;
+using System.ComponentModel;
 
 namespace MVCAssignment3.Models.Entities
 {
     public class Person
     {
-
         public int Id { get; set; }
+
+        [DisplayName("First Name")]
         public string FirstName { get; set; }
+
+        [DisplayName("Last Name")]
         public string LastName { get; set; }
         public string Gender { get; set; }
+
+        [DisplayName("Date of Birth")]
         public DateTime Dob { get; set; }
+
+        [DisplayName("Phone Number")]
         public string PhoneNumber { get; set; }
+
+        [DisplayName("Birth Place")]
         public string BirthPlace { get; set; }
         public int Age
         {
@@ -19,7 +29,17 @@ namespace MVCAssignment3.Models.Entities
                 return DateTime.Now.Year - this.Dob.Year;
             }
         }
+
+        [DisplayName("Graduated")]
         public bool IsGraduated { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                return $"{FirstName} {LastName}";
+            }
+        }
 
         public Person(
             int id, string firstName, string lastName, string gender,
