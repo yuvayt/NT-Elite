@@ -19,7 +19,7 @@ namespace TaskAPI.Controllers
             _taskService = taskService;
         }
 
-        [HttpPost()]
+        [HttpPost]
         public TaskModel Create([FromBody] NewTaskDTO newTask)
         {
             return _taskService.Create(newTask);
