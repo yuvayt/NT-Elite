@@ -19,13 +19,13 @@ namespace TaskAPI.Controllers
             _taskService = taskService;
         }
 
-        [HttpPost]
-        public TaskModel Create(NewTaskDTO newTask)
+        [HttpPost()]
+        public TaskModel Create([FromBody] NewTaskDTO newTask)
         {
             return _taskService.Create(newTask);
         }
 
-        [HttpGet("/get-all")]
+        [HttpGet("/all-tasks")]
         public IEnumerable<TaskModel> GetAll()
         {
             return _taskService.ListAll();
@@ -49,13 +49,13 @@ namespace TaskAPI.Controllers
             return _taskService.Update(editTask);
         }
 
-        [HttpPost("/create-multiple-tasks")]
+        [HttpPost("/multiple-tasks")]
         public bool CreateMultipleTasks([FromBody] IEnumerable<NewTaskDTO> newTasks)
         {
             return _taskService.CreateMultipleTasks(newTasks);
         }
 
-        [HttpPost("/delete-multiple-tasks")]
+        [HttpDelete("/multiple-tasks")]
         public void DeleteMultipleTasks([FromBody] IEnumerable<Guid> ids)
         {
             _taskService.DeleteMultipleTasks(ids);
