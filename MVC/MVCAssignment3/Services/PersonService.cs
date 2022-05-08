@@ -9,34 +9,16 @@ namespace MVCAssignment3.Services
 {
     public class PersonService : IPersonService
     {
-        private static List<Person> _people;
+        public static List<Person> People;
 
-        public List<Person> People
-        {
-            get
-            {
-                if (_people != null)
-                {
-                    return _people;
-                }
-                else
-                {
-                    return InitDummyMembers();
-                }
-            }
-            private set
-            {
-                _people = value;
-            }
-        }
         public PersonService()
         {
-            if (_people == null)
+            if (People == null)
             {
-                _people = InitDummyMembers();
+                People = InitDummyMembers();
             }
         }
-        private List<Person> InitDummyMembers()
+        private static List<Person> InitDummyMembers()
         {
             return new List<Person>{
              new Person(1, "Bo", "Tran", "Bio", new DateTime(2021, 6, 9), "01234435", "HCM", false),

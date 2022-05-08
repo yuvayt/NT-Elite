@@ -84,12 +84,12 @@ namespace MVCAssignment3.Controllers
             if (id != null)
             {
                 var deletePerson = _personService.GetPersonById((int)id);
-                string deleteKey = deletePerson.Id.ToString();
-                HttpContext.Session.SetString(deleteKey, deletePerson.FullName);
-
                 if (_personService.Delete(deletePerson))
                 {
-                    return View((object)deleteKey);
+                    string deleteKey = deletePerson.Id.ToString();
+                    HttpContext.Session.SetString(deleteKey, deletePerson.FullName);
+                    ViewBag.Id = deleteKey;
+                    return View();
                 }
             }
 

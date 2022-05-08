@@ -1,9 +1,12 @@
 @using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@model string
+
 
 @{
-    string deleteName = HttpContextAccessor.HttpContext.Session.GetString(Model);
+
+    string key = ViewBag.Id;
+
+    string deleteName = HttpContextAccessor.HttpContext.Session.GetString(key);
 }
 
 <h2 class="m-5 text-center">
