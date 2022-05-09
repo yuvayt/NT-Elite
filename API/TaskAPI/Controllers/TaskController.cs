@@ -9,7 +9,7 @@ using System.Linq;
 namespace TaskAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("tasks")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -25,13 +25,13 @@ namespace TaskAPI.Controllers
             return _taskService.Create(newTask);
         }
 
-        [HttpGet("/all-tasks")]
+        [HttpGet]
         public IEnumerable<TaskModel> GetAll()
         {
             return _taskService.ListAll();
         }
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         public TaskModel Get(Guid id)
         {
             return _taskService.Get(id);
