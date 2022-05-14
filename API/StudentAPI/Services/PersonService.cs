@@ -21,27 +21,19 @@ namespace StudentAPI.Services
         private static List<Person> InitDummyMembers()
         {
             return new List<Person>{
-             new Person(1, "Bo", "Tran", "Bio", new DateTime(2021, 6, 9), "01234435", "HCM", false),
-             new Person(2, "Da", "Nguyen", "Male", new DateTime(1969, 6, 9), "01234435", "HN", true),
-             new Person(3, "Banh", "Kha", "Male", new DateTime(2000, 6, 9), "01234435", "HCM", false),
-             new Person(4, "Huan", "Rose", "Female", new DateTime(1999, 6, 8), "01234435", "HCM", true),
-             new Person(5, "Tien", "Bip", "Male", new DateTime(2001, 6, 9), "01234435", "HN", true),
-             new Person(6, "Loc", "Fuho", "Male", new DateTime(2001, 6, 9), "01234435", "DN", true)
+             new Person("Bo", "Tran", "Bio", new DateTime(2021, 6, 9), "01234435", "HCM", false),
+             new Person("Da", "Nguyen", "Male", new DateTime(1969, 6, 9), "01234435", "HN", true),
+             new Person("Banh", "Kha", "Male", new DateTime(2000, 6, 9), "01234435", "HCM", false),
+             new Person("Huan", "Rose", "Female", new DateTime(1999, 6, 8), "01234435", "HCM", true),
+             new Person("Tien", "Bip", "Male", new DateTime(2001, 6, 9), "01234435", "HN", true),
+             new Person("Loc", "Fuho", "Male", new DateTime(2001, 6, 9), "01234435", "DN", true)
             };
         }
 
-        public Person Create(NewPersonDTO personDTO)
+        public Person Create(PersonDTO personDTO)
         {
-            int? maxId = People.Max(p => p.Id);
-            if (maxId == null)
-            {
-                maxId = 0;
-            }
-            var nextId = (int)maxId + 1;
-
             var addingPerson = new Person(
-            nextId
-            , personDTO.FirstName
+             personDTO.FirstName
             , personDTO.LastName
             , personDTO.Gender
             , personDTO.Dob
@@ -54,9 +46,9 @@ namespace StudentAPI.Services
             return addingPerson;
         }
 
-        public bool Delete(int id)
+        public bool Delete(Guid id)
         {
-            var deletePerson = GetPersonById((int)id);
+            var deletePerson = GetPersonById(id);
             if (deletePerson != null)
             {
                 People.Remove(deletePerson);
@@ -67,44 +59,48 @@ namespace StudentAPI.Services
             return false;
         }
 
-        public Person Update(EditPersonDTO editPersonDTO)
+        public Person Update(PersonDTO updatePerson)
         {
-            var existingPerson = GetPersonById(editPersonDTO.Id);
-            if (existingPerson != null)
+            if (updatePerson == null || updatePerson.Id == Guid.Empty)
             {
-                existingPerson.FirstName = editPersonDTO.FirstName;
-                existingPerson.LastName = editPersonDTO.LastName;
-                existingPerson.Gender = editPersonDTO.Gender;
-                existingPerson.Dob = editPersonDTO.Dob;
-                existingPerson.PhoneNumber = editPersonDTO.PhoneNumber;
-                existingPerson.BirthPlace = editPersonDTO.BirthPlace;
-                existingPerson.IsGraduated = editPersonDTO.IsGraduated;
-
-                return existingPerson;
+                return null;
             }
 
-            return null;
+            var existingPerson = GetPersonById(updatePerson.Id);
+            if (existingPerson == null)
+            {
+                return null;
+            }
+
+            existingPerson.FirstName = updatePerson.FirstName;
+            existingPerson.LastName = updatePerson.LastName;
+            existingPerson.Gender = updatePerson.Gender;
+            existingPerson.Dob = updatePerson.Dob;
+            existingPerson.PhoneNumber = updatePerson.PhoneNumber;
+            existingPerson.BirthPlace = updatePerson.BirthPlace;
+            existingPerson.IsGraduated = updatePerson.IsGraduated;
+
+            return existingPerson;
         }
 
-        public Person GetPersonById(int id)
+        public Person GetPersonById(Guid id)
         {
             return People.FirstOrDefault(p => p.Id == id);
         }
 
-        public IEnumerable<Person> ListPeople(string filterValue)
+        public IEnumerable<Person> FilterPeople(SimplifyPersonDTO filerDto)
         {
-            if (!string.IsNullOrEmpty(filterValue))
+            if (filerDto == null)
             {
-                filterValue = filterValue.Trim();
-
-                return People.Where(
-                    p => p.FirstName.Contains(filterValue)
-                    || p.LastName.Contains(filterValue)
-                    || p.Gender.ToLowerInvariant().Contains(filterValue.ToLowerInvariant())
-                    || p.BirthPlace.ToLowerInvariant().Contains(filterValue.ToLowerInvariant()));
+                return null;
             }
 
-            return People.OrderBy(person => person.Id);
+            return People.Where(
+                p =>
+                   p.FirstName == filerDto.FirstName
+                || p.LastName == filerDto.LastName
+                || (!string.IsNullOrEmpty(filerDto.Gender) && p.Gender.ToLower() == filerDto.Gender.ToLower())
+                || (!string.IsNullOrEmpty(filerDto.BirthPlace) && p.BirthPlace.ToLower() == filerDto.BirthPlace.ToLower()));
         }
     }
 }

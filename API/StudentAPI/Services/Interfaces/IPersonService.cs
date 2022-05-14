@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using StudentAPI.Models.DTO;
 using StudentAPI.Models.Entities;
@@ -6,10 +7,10 @@ namespace StudentAPI.Services.Interfaces
 {
     public interface IPersonService
     {
-        Person Create(NewPersonDTO personDTO);
-        Person Update(EditPersonDTO editPersonDTO);
-        IEnumerable<Person> ListPeople(string filterValue);
-        Person GetPersonById(int id);
-        bool Delete(int id);
+        Person Create(PersonDTO personDTO);
+        Person Update(PersonDTO updatePerson);
+        IEnumerable<Person> FilterPeople(SimplifyPersonDTO filterValue);
+        Person GetPersonById(Guid id);
+        bool Delete(Guid id);
     }
 }
